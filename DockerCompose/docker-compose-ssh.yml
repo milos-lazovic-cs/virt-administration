@@ -1,0 +1,22 @@
+version: '3'
+
+volumes:
+  user1-volume:
+
+services:
+
+  user1-service:
+    image: user-container-1
+    container_name: user1-container
+    build:
+      context: ./UserContainer
+    volumes:
+      - user1-volume:/home    
+    ports:
+      - "7001:22"
+    command: /usr/sbin/sshd -D
+    
+  
+
+
+

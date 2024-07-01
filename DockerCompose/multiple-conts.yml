@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+
+  containers-portal-service:
+    image: containers-portal-image
+    container_name: containers-portal-container
+    build:
+      context: ./ContainersPortal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/bin/docker
+      - /home/Db:/App/Db
+    restart: on-failure
+    command: /bin/sh
+
+
+
+

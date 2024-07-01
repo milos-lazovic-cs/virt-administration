@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  containers-portal-service:
+    image: containers-portal-image
+    container_name: containers-portal-container
+    build:
+      context: ./
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/bin/docker
+      - /home/milos/Db:/App/Db
+      - /home/milos/Docker:/App/Docker
+      - /home/milos/SshKeys/:/App/SshKeys
+    ports:
+      - "5161:5161"
+    restart: on-failure
+    command: /bin/bash
+
+
+
+

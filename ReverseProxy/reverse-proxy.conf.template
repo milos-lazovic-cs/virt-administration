@@ -1,0 +1,30 @@
+
+http {
+
+	# Reverse Proxy
+	server {
+		# Proxy server treba da slusa na port 80 jer smo stavili da se nginx
+		# image mapira sa host porta 80 na image port 80.
+		listen 80;
+		server_name localhost 127.0.0.1;
+
+		
+		location /forecast-serbia {
+            
+			# Razlog zbog cega mozemo da koristimo domen umesto IP adrese
+			# je to sto docker compose umrezava sve servise i omogucava da
+			# im se pristupi po njihovom service name-u.	
+			
+			proxy_pass			http://weather-forecast-serbia-service:${PORT}/WeatherForecast;
+			proxy_set_header	X-Forwarded-For $remote_addr;
+		}			
+
+        location /forecast-england {
+
+			proxy_pass			http://weather-forecast-england-service:${PORT}/WeatherForecast;
+			proxy_set_header	X-Forwarded-For $remote_addr;
+
+		}	
+		
+	}
+}

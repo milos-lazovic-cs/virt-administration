@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+    var user = await UserManager.GetUserAsync(User);
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div>
+    <form id="getResultForm" method="post" action="@Url.Action("GetResult", "Home")">
+        <button type="submit">Get Result</button>
+    </form>
+    <div id="resultContainer">
+        @if (ViewData["Result"] != null)
+        {
+            <h3>Result:</h3>
+            <p>@ViewData["Result"]</p>
+        }
+    </div>
+</div>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <h5>PuTTY private key:</h5><br/>
+    <div>Ip Address: @user.IpAddress</div>
+    <div>Port: @user.Port</div>
+    <textarea id="puttyPrivateKey" class="form-control" rows="10" cols="80" readonly>@user.PuttyPrivateKey</textarea>    
+    <button class="btn btn-primary mt-2" onclick="copyText()">Copy Text</button>
+}
+
+
+
+@section Scripts {
+    <script>
+        function copyText() {
+            ppkTextArea = document.getElementById('puttyPrivateKey');
+            ppkTextArea.select();
+            document.execCommand('copy');
+            alert('Text copied to clipboard!');
+        }
+    </script>
+}
