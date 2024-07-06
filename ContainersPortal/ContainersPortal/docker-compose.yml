@@ -13,6 +13,7 @@ services:
       - /home/milos/Db:/App/Db
       - /home/milos/Docker:/App/Docker
       - /home/milos/SshKeys/:/App/SshKeys
+      - /home/milos/UserVolumes/:/App/UserVolumes
     ports:
       - "5161:5161"
     restart: on-failure

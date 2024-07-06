@@ -1,5 +1,5 @@
+using ContainersPortal.Constants;
 using ContainersPortal.Controllers;
-using ContainersPortal.Helpers;
 using ContainersPortal.Models;
 using ContainersPortal.Services;
 using Microsoft.AspNetCore.Identity;
@@ -9,17 +9,21 @@ using System.Threading.Tasks;
 namespace ContainersPortal.Controllers;
 
 public class AccountController : Controller
-{    
+{
     private readonly ILogger _logger;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly DockerManagerService _dockerManagerService;
     private readonly DatabaseContext _dbContext;
     private readonly LinuxHelperService _linuxHelperService;
+    private const string _imgPath = "/home/milos/UserVolumes/";
+    private const string _mountDirPath = "/mnt/user-volumes/";
+    private const int _blockSize = 1;
+    private const int _blockCount = 1024;
 
 
     public AccountController(ILogger<AccountController> logger,
-        UserManager<User> userManager, 
+        UserManager<User> userManager,
         SignInManager<User> signInManager,
         DockerManagerService dockerManagerService,
         DatabaseContext dbContext,
@@ -72,16 +76,34 @@ public class AccountController : Controller
 
         var imageName = user.UserName + "-img";
         var containerName = user.UserName + "-cont";
-        var port = Int32.Parse(_linuxHelperService.ExecuteCommandOnHost("milos", "192.168.1.102", "laza", LinuxHelperService.GET_HOST_UNUSED_PORT));
-        var ipAddress = (_linuxHelperService.ExecuteCommandOnHost("milos", "192.168.1.102", "laza", LinuxHelperService.GET_HOST_IP_ADDRESS)).ToString();
+        var port = Int32.Parse(_linuxHelperService
+            .ExecuteCommandOnHost(GlobalConstants.HOST_USERNAME,
+                                  GlobalConstants.HOST_IP_ADDRESS,
+                                  GlobalConstants.HOST_PASSWORD,
+                                  LinuxHelperService.GET_HOST_UNUSED_PORT));
+
+
+        var ipAddress = (_linuxHelperService
+            .ExecuteCommandOnHost(GlobalConstants.HOST_USERNAME,
+                                  GlobalConstants.HOST_IP_ADDRESS,
+                                  GlobalConstants.HOST_PASSWORD,
+                                  LinuxHelperService.GET_HOST_IP_ADDRESS)).ToString();
+
         _logger.LogInformation("Ip Address: " + ipAddress);
         _logger.LogInformation("Port: " + port);
 
+        _linuxHelperService.CreateNewVolume(
+            imgPath: _imgPath + $"{user.UserName}.img",
+            mountDirPath: _mountDirPath + $"{user.UserName}-volume/",
+            blockSize: _blockSize,
+            blockCount: _blockCount);
+
         _dockerManagerService.BuildAndRunContainer(
-            "./Docker/",
-            imageName,
-            containerName,
-            $"{port}:22");        
+            dockerFilePath: "./Docker/",
+            imageName: imageName,
+            containerName: containerName,
+            volumePath: _mountDirPath + $"{user.UserName}-volume/",
+            portsMapping: $"{port}:22");
 
         var keysPath = $"./SshKeys/{user.UserName}/";
         var hostKeysPath = $"~/SshKeys/{user.UserName}/";
@@ -94,14 +116,14 @@ public class AccountController : Controller
 
         dbUser.PuttyPrivateKey = sshKeys.PuttyPrivateKey;
         dbUser.OpenSshPrivateKey = sshKeys.OpenSshPrivateKey;
-        dbUser.PublicKey = sshKeys.PublicKey;  
+        dbUser.PublicKey = sshKeys.PublicKey;
         dbUser.Port = port;
         dbUser.IpAddress = ipAddress;
         dbUser.DockerImageName = imageName;
         dbUser.DockerContainerName = containerName;
 
         await _dbContext.SaveChangesAsync();
-        
+
         _logger.LogInformation("Keys created.");
 
         return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -123,7 +145,11 @@ public class AccountController : Controller
             return View(userModel);
         }
 
-        var result = await _signInManager.PasswordSignInAsync(userModel.Username, userModel.Password, userModel.RememberMe, false);
+        var result = await _signInManager.PasswordSignInAsync(userModel.Username,
+                                                              userModel.Password,
+                                                              userModel.RememberMe,
+                                                              false);
+
         if (result.Succeeded)
         {
             return RedirectToLocal(returnUrl);

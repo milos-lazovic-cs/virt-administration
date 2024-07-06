@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ContainersPortal\\ContainersPortal\\ContainersPortal.csproj": {}
+    "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ubuntu-shared-project\\virt-administration\\ContainersPortal\\ContainersPortal\\ContainersPortal.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ContainersPortal\\ContainersPortal\\ContainersPortal.csproj": {
+    "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ubuntu-shared-project\\virt-administration\\ContainersPortal\\ContainersPortal\\ContainersPortal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ContainersPortal\\ContainersPortal\\ContainersPortal.csproj",
+        "projectUniqueName": "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ubuntu-shared-project\\virt-administration\\ContainersPortal\\ContainersPortal\\ContainersPortal.csproj",
         "projectName": "ContainersPortal",
-        "projectPath": "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ContainersPortal\\ContainersPortal\\ContainersPortal.csproj",
+        "projectPath": "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ubuntu-shared-project\\virt-administration\\ContainersPortal\\ContainersPortal\\ContainersPortal.csproj",
         "packagesPath": "C:\\Users\\Milos Lazovic\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ContainersPortal\\ContainersPortal\\obj\\",
+        "outputPath": "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ubuntu-shared-project\\virt-administration\\ContainersPortal\\ContainersPortal\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -22,15 +22,15 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net7.0"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net7.0": {
-            "targetAlias": "net7.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -41,8 +41,8 @@
         }
       },
       "frameworks": {
-        "net7.0": {
-          "targetAlias": "net7.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
@@ -88,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

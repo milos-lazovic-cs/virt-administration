@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EdRyU8E8vOqijjoBHzuu5ExkfKHazpw6eY31vg7ZKbGt+pb5q43BDfKSAYL3nZaebsJuZK6E0tOM/vT4OrrThw==",
+  "dgSpecHash": "RdxMMWscUOsQPywvr45+q2f4bsoVllwIbp0q7eMMthWMOmNeq8Gbleu/w0IGELDisKwcSOKFcgCnj+Chzikwdg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ContainersPortal\\ContainersPortal\\ContainersPortal.csproj",
+  "projectFilePath": "C:\\Users\\Milos Lazovic\\Desktop\\Milos\\Elfak\\Virtualizacija\\Project\\ubuntu-shared-project\\virt-administration\\ContainersPortal\\ContainersPortal\\ContainersPortal.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Milos Lazovic\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Milos Lazovic\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\7.0.14\\microsoft.aspnetcore.cryptography.internal.7.0.14.nupkg.sha512",
