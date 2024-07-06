@@ -72,8 +72,8 @@ public class AccountController : Controller
 
         var imageName = user.UserName + "-img";
         var containerName = user.UserName + "-cont";
-        var port = Int32.Parse(_linuxHelperService.ExecuteCommandOnHost("milos", "10.0.2.15", "laza", LinuxHelperService.GET_HOST_UNUSED_PORT));
-        var ipAddress = (_linuxHelperService.ExecuteCommandOnHost("milos", "10.0.2.15", "laza", LinuxHelperService.GET_HOST_IP_ADDRESS)).ToString();
+        var port = Int32.Parse(_linuxHelperService.ExecuteCommandOnHost("milos", "192.168.1.102", "laza", LinuxHelperService.GET_HOST_UNUSED_PORT));
+        var ipAddress = (_linuxHelperService.ExecuteCommandOnHost("milos", "192.168.1.102", "laza", LinuxHelperService.GET_HOST_IP_ADDRESS)).ToString();
         _logger.LogInformation("Ip Address: " + ipAddress);
         _logger.LogInformation("Port: " + port);
 
