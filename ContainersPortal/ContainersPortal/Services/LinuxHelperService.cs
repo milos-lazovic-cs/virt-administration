@@ -1,4 +1,5 @@
 using ContainersPortal.Constants;
+using ContainersPortal.Models;
 using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -43,6 +44,7 @@ public class LinuxHelperService
             ExecuteCommandOnHostAsRoot(GlobalConstants.HOST_USERNAME, GlobalConstants.HOST_IP_ADDRESS,
                 GlobalConstants.HOST_PASSWORD, addOwnership);
 
+            _logger.LogInformation($"Volume with size {blockCount * blockCount}MB created. Volume mounted on directory '{mountDirPath}'.");
             return true;
         }
         catch (Exception ex)

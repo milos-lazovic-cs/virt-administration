@@ -13,4 +13,7 @@ public class User : IdentityUser
     public int Port { get; set; }
     public string DockerImageName { get; set;} = string.Empty;
     public string DockerContainerName { get ; set; } = string.Empty;
+    public string ImageVolumePath { get; set; } = string.Empty;
+    public string MountVolumePath { get; set; } = string.Empty;
+
 }

@@ -74,57 +74,57 @@ public class AccountController : Controller
         var AddToRoleResult = await _userManager.AddToRoleAsync(user, "Guest");
         _logger.LogInformation(AddToRoleResult.ToString());
 
-        var imageName = user.UserName + "-img";
-        var containerName = user.UserName + "-cont";
-        var port = Int32.Parse(_linuxHelperService
-            .ExecuteCommandOnHost(GlobalConstants.HOST_USERNAME,
-                                  GlobalConstants.HOST_IP_ADDRESS,
-                                  GlobalConstants.HOST_PASSWORD,
-                                  LinuxHelperService.GET_HOST_UNUSED_PORT));
+        //var imageName = user.UserName + "-img";
+        //var containerName = user.UserName + "-cont";
+        //var keysPath = $"./SshKeys/{user.UserName}/";
+        //var hostKeysPath = $"~/SshKeys/{user.UserName}/";
+        //var imgPath = _imgPath + $"{user.UserName}.img";
+        //var mountDirPath = _mountDirPath + $"{user.UserName}-volume/";
+
+        //var port = Int32.Parse(_linuxHelperService
+        //    .ExecuteCommandOnHost(GlobalConstants.HOST_USERNAME,
+        //                          GlobalConstants.HOST_IP_ADDRESS,
+        //                          GlobalConstants.HOST_PASSWORD,
+        //                          LinuxHelperService.GET_HOST_UNUSED_PORT));
 
 
-        var ipAddress = (_linuxHelperService
-            .ExecuteCommandOnHost(GlobalConstants.HOST_USERNAME,
-                                  GlobalConstants.HOST_IP_ADDRESS,
-                                  GlobalConstants.HOST_PASSWORD,
-                                  LinuxHelperService.GET_HOST_IP_ADDRESS)).ToString();
+        //var ipAddress = (_linuxHelperService
+        //    .ExecuteCommandOnHost(GlobalConstants.HOST_USERNAME,
+        //                          GlobalConstants.HOST_IP_ADDRESS,
+        //                          GlobalConstants.HOST_PASSWORD,
+        //                          LinuxHelperService.GET_HOST_IP_ADDRESS)).ToString();
 
-        _logger.LogInformation("Ip Address: " + ipAddress);
-        _logger.LogInformation("Port: " + port);
+        //_logger.LogInformation($"Ip Address: {ipAddress}. Port: {port}");
 
-        _linuxHelperService.CreateNewVolume(
-            imgPath: _imgPath + $"{user.UserName}.img",
-            mountDirPath: _mountDirPath + $"{user.UserName}-volume/",
-            blockSize: _blockSize,
-            blockCount: _blockCount);
+        //_linuxHelperService.CreateNewVolume(imgPath, mountDirPath, _blockSize, _blockCount);
 
-        _dockerManagerService.BuildAndRunContainer(
-            dockerFilePath: "./Docker/",
-            imageName: imageName,
-            containerName: containerName,
-            volumePath: _mountDirPath + $"{user.UserName}-volume/",
-            portsMapping: $"{port}:22");
+        //_dockerManagerService.BuildAndRunContainer(
+        //    "./Docker/",
+        //    imageName,
+        //    containerName,
+        //    $"{mountDirPath}:{GlobalConstants.USER_CONT_VOLUME_PATH}",
+        //    $"{port}:22");
 
-        var keysPath = $"./SshKeys/{user.UserName}/";
-        var hostKeysPath = $"~/SshKeys/{user.UserName}/";
-        Directory.CreateDirectory(keysPath);
-        var sshKeys = _dockerManagerService.CreatePublicPrivateKeyPair(containerName, keysPath, hostKeysPath);
+        //Directory.CreateDirectory(keysPath);
+        //var sshKeys = _dockerManagerService.CreatePublicPrivateKeyPair(containerName, keysPath, hostKeysPath);
 
-        var dbUser = _dbContext.Users.Where(u => u.Email == user.Email).FirstOrDefault();
-        if (dbUser == null)
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+        //var dbUser = _dbContext.Users.Where(u => u.Email == user.Email).FirstOrDefault();
+        //if (dbUser == null)
+        //    return RedirectToAction(nameof(HomeController.Index), "Home");
 
-        dbUser.PuttyPrivateKey = sshKeys.PuttyPrivateKey;
-        dbUser.OpenSshPrivateKey = sshKeys.OpenSshPrivateKey;
-        dbUser.PublicKey = sshKeys.PublicKey;
-        dbUser.Port = port;
-        dbUser.IpAddress = ipAddress;
-        dbUser.DockerImageName = imageName;
-        dbUser.DockerContainerName = containerName;
+        //dbUser.PuttyPrivateKey = sshKeys.PuttyPrivateKey;
+        //dbUser.OpenSshPrivateKey = sshKeys.OpenSshPrivateKey;
+        //dbUser.PublicKey = sshKeys.PublicKey;
+        //dbUser.Port = port;
+        //dbUser.IpAddress = ipAddress;
+        //dbUser.DockerImageName = imageName;
+        //dbUser.DockerContainerName = containerName;
+        //dbUser.ImageVolumePath = imgPath;
+        //dbUser.MountVolumePath = mountDirPath;
 
-        await _dbContext.SaveChangesAsync();
+        //await _dbContext.SaveChangesAsync();
 
-        _logger.LogInformation("Keys created.");
+        _logger.LogInformation($"User '{user.UserName}' registered.");
 
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }
@@ -140,6 +140,8 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(UserLoginModel userModel, string returnUrl = null)
     {
+        _logger.LogInformation($"Return URL: {returnUrl}");
+
         if (!ModelState.IsValid)
         {
             return View(userModel);
@@ -150,15 +152,19 @@ public class AccountController : Controller
                                                               userModel.RememberMe,
                                                               false);
 
-        if (result.Succeeded)
-        {
-            return RedirectToLocal(returnUrl);
-        }
-        else
+        if (!result.Succeeded)
         {
             ModelState.AddModelError("", "Invalid UserName or Password");
             return View();
         }
+
+        //var dbUser = _dbContext.Users.Where(u => u.UserName == userModel.Username).FirstOrDefault();
+        //if (dbUser == null)
+        //    return RedirectToAction(nameof(HomeController.Index), "Home");
+
+        //_dockerManagerService.StartContainer(dbUser.DockerContainerName);
+
+        return RedirectToLocal(returnUrl);
     }
 
     [HttpPost]
@@ -166,6 +172,11 @@ public class AccountController : Controller
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
+
+        var user = await _userManager.GetUserAsync(User);
+
+        //if (user != null)
+        //    _dockerManagerService.StopContainer(user.DockerContainerName);
 
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }

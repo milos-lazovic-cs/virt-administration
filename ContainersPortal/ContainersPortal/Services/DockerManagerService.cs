@@ -17,7 +17,7 @@ public class DockerManagerService
     }
 
     public void BuildAndRunContainer(string dockerFilePath, string imageName, string containerName,
-        string? volumePath = null, string? portsMapping = null)
+        string? volumeMappings = null, string? portsMapping = null)
     {
         try
         {
@@ -28,14 +28,11 @@ public class DockerManagerService
                 port = $"-p {portsMapping} ";
 
             string volume = string.Empty;
-            if (volumePath != null)
-                volume = $"-v {volumePath}:{GlobalConstants.USER_CONT_VOLUME_PATH} ";
+            if (volumeMappings != null)
+                volume = $"-v {volumeMappings} ";
 
             string runDockerCont = $"docker run -d " + port + volume +
                 $"--name {containerName} {imageName} ";
-
-            //$"{(portsMapping != null ? "-p " + portsMapping : string.Empty)} " +
-            //$"{(volumePath != null ? $"-v {volumePath}:{GlobalConstants.USER_CONT_VOLUME_PATH}" : string.Empty)} " +
 
             List<string> commands = new List<string>()
             {
@@ -46,13 +43,74 @@ public class DockerManagerService
             foreach (var command in commands)
                 _linuxHelperService.ExecuteCommand(command);
 
-            _logger.LogInformation("Container running.");
+            _logger.LogInformation($"Container '{containerName}' running.");
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error while creating container: {ex.ToString()}");
+            _logger.LogError($"Error while creating container {containerName}: {ex.ToString()}");
         }
     }
+
+    public void BuildDockerImage(string dockerFilePath, string imageName)
+    {
+        try
+        {
+            string buildDockerCont = $"docker build -t {imageName} {dockerFilePath}";
+
+            _linuxHelperService.ExecuteCommand(buildDockerCont);
+
+            _logger.LogInformation($"Docker image '{imageName}' building.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error while building image {imageName}: {ex.ToString()}");
+        }
+    }
+
+    public void StartContainer(string containerName)
+    {
+        try
+        {
+            string stopContainer = $"docker start {containerName}";
+            _linuxHelperService.ExecuteCommand(stopContainer);
+            _logger.LogError($"Starting container '{containerName}'.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Starting container failed.");
+        }
+    }
+
+
+    public void StopContainer(string containerName)
+    {
+        try
+        {
+            string stopContainer = $"docker stop {containerName}";
+            _linuxHelperService.ExecuteCommand(stopContainer);
+            _logger.LogError($"Stopping container '{containerName}'.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Stopping container failed.");
+        }
+    }
+
+    public void RemoveContainer(string containerName)
+    {
+        try
+        {
+            string removeContainer = $"docker rm {containerName}";
+            _linuxHelperService.ExecuteCommand(removeContainer);
+            _logger.LogError($"Removing container '{containerName}'.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Removing container failed.");
+        }
+    }
+
+
 
     // ~/.ssh/
     // /home/milos/.ssh/
@@ -77,6 +135,10 @@ public class DockerManagerService
 
         foreach (var command in commands)
             _linuxHelperService.ExecuteCommand(command);
+
+        _logger.LogInformation($"Public and private key pair created. \nPutty private key: {outputPath}id_rsa.ppk.\n" +
+            $"OpenSSH private key: {outputPath}id_rsa.\n" +
+            $"Public key: {outputPath}id_rsa.pub.");
 
         return new SshKeys
         {

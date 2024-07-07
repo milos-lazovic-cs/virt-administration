@@ -17,6 +17,7 @@ public class DatabaseContext : IdentityDbContext<User>
 
         modelBuilder.ApplyConfiguration(new StudentConfiguration());
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
+        modelBuilder.ApplyConfiguration(new AspNetUserConfiguration());
     }
 
     public DbSet<Student> Students { get; set; }
