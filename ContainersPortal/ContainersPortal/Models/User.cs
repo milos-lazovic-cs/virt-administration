@@ -6,6 +6,7 @@ public class User : IdentityUser
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public bool IsActive { get; set; }
     public string PuttyPrivateKey { get; set; } = string.Empty;
     public string OpenSshPrivateKey { get; set; } = string.Empty;
     public string PublicKey { get; set; } = string.Empty;

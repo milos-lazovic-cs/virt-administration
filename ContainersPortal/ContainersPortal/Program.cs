@@ -1,3 +1,4 @@
+using ContainersPortal.Database;
 using ContainersPortal.Extensions;
 using ContainersPortal.Models;
 using ContainersPortal.Services;
@@ -12,9 +13,10 @@ builder.Services.AddControllersWithViews();
 // Add services
 builder.Services.AddScoped<DockerManagerService>();
 builder.Services.AddScoped<LinuxHelperService>();
+builder.Services.AddHostedService<StartupService>();
 
 // Add database provider
-builder.Services.AddDbContext<DatabaseContext>(options =>
+builder.Services.AddDbContext<UserContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection")));
 
 // Add authentication
@@ -25,7 +27,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
         options.Password.RequireUppercase = false;
         options.User.RequireUniqueEmail = true;
     })
-    .AddEntityFrameworkStores<DatabaseContext>();
+    .AddEntityFrameworkStores<UserContext>();
+
+builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build();
 

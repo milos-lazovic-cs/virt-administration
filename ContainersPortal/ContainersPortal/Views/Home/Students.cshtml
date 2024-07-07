@@ -1,38 +1,253 @@
-@model IEnumerable<ContainersPortal.Models.Student>
+@model StudentCollection
 
 @{
     ViewData["Title"] = "Students";
 }
 
-<table class=table>
-    <thread>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-        </tr>
-    </thread>
-    <tbody>
-        @foreach (var item in Model) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<h5 class="text-center display-6">Student List</h5>
 
-<h2>Claim details</h2>
-<ul>
-    @foreach (var claim in User.Claims)
-    {
-        <li><strong>@claim.Type</strong>: @claim.Value</li>
+<div class="container mt-4">
+    <div class="custom-card p-5">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        @if (Model.Students.Any())
+                        {
+                            <tr>
+                                <th class="text-center nowrap">Username</th>
+                                <th class="text-center nowrap">Email</th>
+                                <th class="text-center nowrap">First Name</th>
+                                <th class="text-center nowrap">Last Name</th>
+                                <th class="text-center nowrap">Active</th>
+                                <th class="text-center nowrap">Putty Private Key</th>
+                                <th class="text-center nowrap">OpenSSH Private Key</th>
+                                <th class="text-center nowrap">Public Key</th>
+                                <th class="text-center nowrap">Ip Address</th>
+                                <th class="text-center nowrap">Port</th>
+                                <th class="text-center nowrap">Docker Image Name</th>
+                                <th class="text-center nowrap">Docker Container Name</th>
+                                <th class="text-center nowrap">Image Volume Path</th>
+                                <th class="text-center nowrap">Mount Volume Path</th>
+                            </tr>
+                        }
+                    </thead>
+                    <tbody>
+                        @if (Model.Students.Any())
+                        {
+                            @foreach (var student in Model.Students)
+                            {
+                                <tr id="row-@student.UserName" onclick="showForm('@student.UserName')">
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.UserName)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.Email)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.FirstName)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.LastName)</td>
+                                    <td>
+                                        @if (student.IsActive)
+                                        {
+                                            <div class="alert alert-info alert-custom" role="alert">
+                                                Active
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-warning alert-custom" role="alert">
+                                                Inactive
+                                            </div>
+                                        }
+                                    </td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.PuttyPrivateKey)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.OpenSshPrivateKey)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.PublicKey)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.IpAddress)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.Port)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.DockerImageName)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.DockerContainerName)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.ImageVolumePath)</td>
+                                    <td class="text-center">@Html.DisplayFor(modelItem => student.MountVolumePath)</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="13" class="text-center">No students available.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-2">Select student</p>
+        </div>
+    </div>
+</div>
+
+<div id="userForm" class="custom-card mt-4 p-4" style="display: none; max-width: 400px;  margin: 0 auto;">
+    <h5 class="text-center" style="font-weight: 400;">Container Information</h5>
+
+    <!-- Form fields for user information -->
+    <div>
+        <label for="user-name" class="mt-1">User name</label>
+        <input type="text" class="form-control mt-1" id="user-name" readonly>
+    </div>
+    <div>
+        <label for="container-name" class="mt-1">Container name</label>
+        <input type="text" class="form-control mt-1" id="container-name" readonly>
+    </div>
+    <div>
+        <label for="is-active" class="mt-1">Is active</label>
+        <input type="text" class="form-control mt-1" id="is-active" readonly>
+    </div>
+    @*
+    <div>
+        <label for="used-memory" class="mt-1">Used memory</label>
+        <input type="text" class="form-control mt-1" id="used-memory" readonly>
+    </div>
+    <div>
+        <label for="running-time" class="mt-1">Running time</label>
+        <input type="text" class="form-control mt-1" id="running-time" readonly>
+    </div>
+    *@
+    <div class="d-flex justify-content-around mt-4">
+        <button id="start-button"
+                type="button"
+                class="btn btn-success btn-sm"
+                style="width: 100px;"
+                onclick="startContainer()">Start</button>
+
+        <button id="stop-button"
+                type="button"
+                class="btn btn-danger btn-sm"
+                style="width: 100px;"
+                onclick="stopContainer()">Stop</button>
+    </div>
+    <button type="button" class="btn btn-secondary btn-sm mx-auto d-block mt-4" style="width: 100px;" onclick="hideForm()">Close</button>
+
+</div>
+
+
+<script>
+    function showForm(username) {
+
+        document.getElementById('userForm').style.display = 'block';
+
+        $.ajax({
+            type: 'GET',
+            url: '/Container/GetContainerInfo',
+            data: { username: username },
+            success: function (data) {
+                document.getElementById('container-name').value = data.containerName;
+                document.getElementById('user-name').value = username;
+
+                if (data.isActive) {
+                    document.getElementById('start-button').disabled = true;
+                    document.getElementById('stop-button').disabled = false;
+                    document.getElementById('is-active').value = "Active"
+                } else {
+                    document.getElementById('start-button').disabled = false;
+                    document.getElementById('stop-button').disabled = true;
+                    document.getElementById('is-active').value = "Inactive"
+                }
+            },
+            error: function () {
+                alert('Failed to retrieve user information.');
+            }
+        });
     }
-</ul>
+
+    function hideForm() {
+        document.getElementById('userForm').style.display = 'none';
+    }
+
+    function startContainer() {
+        var containerName = document.getElementById('container-name').value;
+        var userName = document.getElementById('user-name').value;
+
+        $.ajax({
+            type: 'POST',
+            url: '/Container/StartContainer',
+            contentType: 'application/json',
+            data: JSON.stringify({ containerName: containerName }),
+            success: function (data) {
+                if (data.success) {
+                    document.getElementById('start-button').disabled = true;
+                    document.getElementById('stop-button').disabled = false;
+                    document.getElementById('is-active').value = "Active";
+                    updateTableRow(userName, true);
+                } else {
+                    alert('Failed to start container.');
+                }
+            },
+            error: function () {
+                alert('Failed to start container.');
+            }
+        });
+    }
+
+    function stopContainer() {
+        var containerName = document.getElementById('container-name').value;
+        var userName = document.getElementById('user-name').value;
+
+        $.ajax({
+            type: 'POST',
+            url: '/Container/StopContainer',
+            contentType: 'application/json',
+            data: JSON.stringify({ containerName: containerName }),
+            success: function (data) {
+                if (data.success) {
+                    document.getElementById('start-button').disabled = false;
+                    document.getElementById('stop-button').disabled = true;
+                    document.getElementById('is-active').value = "Inactive";
+                    updateTableRow(userName, false);
+                } else {
+                    alert('Failed to stop container.');
+                }
+            },
+            error: function () {
+                alert('Failed to stop container.');
+            }
+        });
+    }
+
+    function updateTableRow(username, isActive) {
+        var row = document.getElementById('row-' + username);
+        var statusCell = row.cells[4]; // 5th cell (index 4) is the status cell
+        if (isActive) {
+            statusCell.innerHTML = '<div class="alert alert-info alert-custom" role="alert">Active</div>';
+        } else {
+            statusCell.innerHTML = '<div class="alert alert-warning alert-custom" role="alert">Inactive</div>';
+        }
+    }
+
+
+</script>
+
+
+<style>
+
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    .custom-card {
+        border-radius: 1rem;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        padding: 1.5rem;
+    }
+
+    .table-responsive {
+        margin-top: 1rem;
+    }
+
+    .nowrap {
+        white-space: nowrap;
+    }
+
+    .alert-custom {
+        margin-bottom: 0;
+        height: 30px;
+        line-height: 30px;
+        display: flex;
+        align-items: center;
+    }
+</style>

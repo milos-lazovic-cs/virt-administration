@@ -13,5 +13,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Design" Version="1.1.6" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
 
 </Project>

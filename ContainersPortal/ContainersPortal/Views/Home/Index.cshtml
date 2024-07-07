@@ -5,11 +5,13 @@
 @{
     ViewData["Title"] = "Home Page";
     var user = await UserManager.GetUserAsync(User);
+
+    var isAdmin = user != null ?
+        await UserManager.IsInRoleAsync(user, "Administrator") :
+        false;
 }
 
-<div class="text-center mb-5">
-    <h1 class="display-4">Welcome</h1>
-</div>
+
 
 <div>
     <div id="resultContainer">
@@ -21,8 +23,21 @@
     </div>
 </div>
 
-@if (SignInManager.IsSignedIn(User))
+@if (SignInManager.IsSignedIn(User) && !isAdmin)
 {
+    <div class="text-center mb-5">
+        <h1 class="display-5">Welcome to Your Virtual Operating System!</h1>
+    </div>
+
+    <div class="container text-center mt-5">
+        <p class="lead">Explore and manage a virtual Linux environment with full file system administration capabilities.</p>
+        <p class="lead">Your volume, at location <code>/workspace</code>, provides a permanent storage solution for your files, ensuring you can store and access your data securely.</p>
+        <p class="lead">Enjoy the flexibility to perform various system administration tasks, learn Linux commands, and more, all within a safe and controlled environment.</p>
+        <p class="lead">Connect to your virtual environment using PuTTY SSH client with provided information. Private key can be used for passwordless login.</p>
+    </div>
+
+    <br>
+    <br>
 
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -36,6 +51,26 @@
             </div>
         </div>
     </div>
+}
+else if (isAdmin)
+{
+    <div class="text-center mb-5">
+        <h1 class="display-5">Welcome, Administrator!</h1>
+    </div>
+
+    <div class="container text-center mt-5">
+        <p class="lead">Manage user accounts, oversee system administration tasks, and monitor Docker containers effortlessly with our administration dashboard.</p>
+        <p class="lead">Explore user profiles, start or stop Docker containers, and keep track of system activities to ensure smooth operation.</p>
+    </div>
+
+}
+else
+{
+    <div class="container text-center mt-5">
+        <img src="~/images/virtual-server.png" class="img-fluid mb-4" style="max-width: 200px;" alt="Virtual server">
+        <p class="lead">Welcome! Please register to access our system administration tools and create your virtual operating environment.</p>
+    </div>
+
 }
 
 

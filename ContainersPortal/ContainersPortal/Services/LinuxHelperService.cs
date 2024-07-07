@@ -10,7 +10,8 @@ public class LinuxHelperService
 {
 
     public const string GET_HOST_IP_ADDRESS = "hostname -I | awk '{print $1}'";
-    public const string GET_HOST_UNUSED_PORT = "'{ start_port=6000; while true; do (echo >/dev/tcp/localhost/$start_port) >/dev/null 2>&1; [ $? -ne 0 ] && { echo $start_port; break; } || start_port=$((start_port + 1)); done }'";
+    public const string GET_HOST_UNUSED_PORT =
+        "'{ start_port=6000; while true; do (echo >/dev/tcp/localhost/$start_port) >/dev/null 2>&1; [ $? -ne 0 ] && { echo $start_port; break; } || start_port=$((start_port + 1)); done }'";
 
 
     private readonly ILogger _logger;

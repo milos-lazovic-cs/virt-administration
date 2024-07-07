@@ -11,46 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ContainersPortal.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20231224164738_AddImageAndContainerNames")]
-    partial class AddImageAndContainerNames
+    [Migration("20240707125756_AddNewUserProperty")]
+    partial class AddNewUserProperty
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
-
-            modelBuilder.Entity("ContainersPortal.Models.Student", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Students");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e310a6cb-6677-4aa6-93c7-2763956f7a97"),
-                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Mark Miens"
-                        },
-                        new
-                        {
-                            Id = new Guid("398d10fe-4b8d-4606-8e9c-bd2c78d4e001"),
-                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Anna Simmons"
-                        });
-                });
 
             modelBuilder.Entity("ContainersPortal.Models.User", b =>
                 {
@@ -83,9 +51,16 @@ namespace ContainersPortal.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ImageVolumePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("IpAddress")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -95,6 +70,10 @@ namespace ContainersPortal.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MountVolumePath")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("NormalizedEmail")
@@ -179,13 +158,19 @@ namespace ContainersPortal.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e7c594ba-de93-4b7e-b53e-51b97e0cbac2",
+                            Id = "f9af1907-4016-4b3d-a4d0-c6d9de8fa807",
                             Name = "Guest",
                             NormalizedName = "GUEST"
                         },
                         new
                         {
-                            Id = "e9c248e7-ea8a-4d21-b476-7e8619d4855e",
+                            Id = "6bdda0ae-950c-4979-9560-ada6947f3566",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "ced941c9-18bd-4c80-8e3a-7ebe25fa1cde",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });

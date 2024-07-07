@@ -1,12 +1,13 @@
+using ContainersPortal.Models;
 using ContainersPortal.Models.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ContainersPortal.Models;
+namespace ContainersPortal.Database;
 
-public class DatabaseContext : IdentityDbContext<User>
+public class UserContext : IdentityDbContext<User>
 {
-    public DatabaseContext(DbContextOptions options)
+    public UserContext(DbContextOptions options)
     : base(options)
     {
     }
@@ -15,10 +16,7 @@ public class DatabaseContext : IdentityDbContext<User>
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyConfiguration(new StudentConfiguration());
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
-        modelBuilder.ApplyConfiguration(new AspNetUserConfiguration());
     }
 
-    public DbSet<Student> Students { get; set; }
 }

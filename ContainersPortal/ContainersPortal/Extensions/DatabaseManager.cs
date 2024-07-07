@@ -1,6 +1,4 @@
-
-
-using ContainersPortal.Models;
+using ContainersPortal.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace ContainersPortal.Extensions;
@@ -11,7 +9,7 @@ public static class DatabaseManager
     {
         using (var scope = webHost.Services.CreateScope())
         {
-            using (var appContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>())
+            using (var appContext = scope.ServiceProvider.GetRequiredService<UserContext>())
             {
                 try
                 {
@@ -33,7 +31,7 @@ public static class DatabaseManager
             .GetRequiredService<IServiceScopeFactory>()
             .CreateScope())
         {
-            using (var context = serviceScope.ServiceProvider.GetService<DatabaseContext>())
+            using (var context = serviceScope.ServiceProvider.GetService<UserContext>())
             {
                 context?.Database.EnsureCreated();
             }
