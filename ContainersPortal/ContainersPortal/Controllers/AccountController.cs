@@ -73,6 +73,8 @@ public class AccountController : Controller
         var AddToRoleResult = await _userManager.AddToRoleAsync(user, "User");
         _logger.LogInformation(AddToRoleResult.ToString());
 
+        #region Production
+
         var imageName = user.UserName + "-img";
         var containerName = user.UserName + "-cont";
         var keysPath = $"./SshKeys/{user.UserName}/";
@@ -80,11 +82,15 @@ public class AccountController : Controller
         var imgPath = _imgPath + $"{user.UserName}.img";
         var mountDirPath = _mountDirPath + $"{user.UserName}-volume/";
 
-        var port = Int32.Parse(_linuxHelperService
-            .ExecuteCommandOnHost(GlobalConstants.HOST_USERNAME,
-                                  GlobalConstants.HOST_IP_ADDRESS,
-                                  GlobalConstants.HOST_PASSWORD,
-                                  LinuxHelperService.GET_HOST_UNUSED_PORT));
+        var usedPorts = _dbContext.Users.Select(u => u.Port).ToList() ??
+            new List<int>();
+        var port = _linuxHelperService.FindAvailablePort(6000, usedPorts);
+
+        //var port = Int32.Parse(_linuxHelperService
+        //    .ExecuteCommandOnHost(GlobalConstants.HOST_USERNAME,
+        //                          GlobalConstants.HOST_IP_ADDRESS,
+        //                          GlobalConstants.HOST_PASSWORD,
+        //                          LinuxHelperService.GET_HOST_UNUSED_PORT));
 
 
         var ipAddress = (_linuxHelperService
@@ -125,6 +131,8 @@ public class AccountController : Controller
 
         await _dbContext.SaveChangesAsync();
 
+        #endregion
+
         _logger.LogInformation($"User '{user.UserName}' registered.");
 
         return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -159,6 +167,8 @@ public class AccountController : Controller
             return View();
         }
 
+        #region Production
+
         var dbUser = _dbContext.Users.Where(u => u.UserName == userModel.Username).FirstOrDefault();
         if (dbUser == null)
             return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -167,6 +177,8 @@ public class AccountController : Controller
         await _dbContext.SaveChangesAsync();
 
         _dockerManagerService.StartContainer(dbUser.DockerContainerName);
+
+        #endregion
 
         return RedirectToLocal(returnUrl);
     }
@@ -182,6 +194,8 @@ public class AccountController : Controller
         if (user == null)
             return View();
 
+        #region Production
+
         var dbUser = _dbContext.Users.Where(u => u.UserName == user.UserName).FirstOrDefault();
         if (dbUser == null)
             return RedirectToAction(nameof(HomeController.Index), "Home");
@@ -190,6 +204,8 @@ public class AccountController : Controller
         await _dbContext.SaveChangesAsync();
 
         _dockerManagerService.StopContainer(user.DockerContainerName);
+
+        #endregion
 
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }

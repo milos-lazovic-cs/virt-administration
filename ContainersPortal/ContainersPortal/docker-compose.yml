@@ -18,7 +18,8 @@ services:
       - "5161:5161"
     restart: on-failure
     command: /bin/bash
-
-
-
+    environment:
+      HOST_IP_ADDRESS: ${HOST_IP_ADDRESS}
+      HOST_SSH_USERNAME: ${HOST_SSH_USERNAME}
+      HOST_SSH_PASSWORD: ${HOST_SSH_PASSWORD}
 

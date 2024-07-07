@@ -49,7 +49,10 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Students()
     {
-        var students = await _context.Users.ToListAsync();
+        var students = await _context.Users
+            .Where(u => u.UserName.ToLower() != "admin")
+            .ToListAsync();
+
         StudentCollection studentCollection = new StudentCollection();
         studentCollection.Students = students;
 

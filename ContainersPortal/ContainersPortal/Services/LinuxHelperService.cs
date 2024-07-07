@@ -12,13 +12,48 @@ public class LinuxHelperService
     public const string GET_HOST_IP_ADDRESS = "hostname -I | awk '{print $1}'";
     public const string GET_HOST_UNUSED_PORT =
         "'{ start_port=6000; while true; do (echo >/dev/tcp/localhost/$start_port) >/dev/null 2>&1; [ $? -ne 0 ] && { echo $start_port; break; } || start_port=$((start_port + 1)); done }'";
-
+    public const string IS_PORT_AVAILABLE =
+        "'{{ (echo >/dev/tcp/localhost/{0}) >/dev/null 2>&1 && echo false || echo true; }}'";
 
     private readonly ILogger _logger;
 
     public LinuxHelperService(ILogger<LinuxHelperService> logger)
     {
         _logger = logger;
+    }
+
+    public int FindAvailablePort(int startPort, List<int> excusionPorts)
+    {
+        if (startPort == 65535)
+            throw new Exception("No available ports");
+
+        int port = startPort;
+        while (port != 65535)
+        {
+            if (excusionPorts.Contains(port))
+            {
+                port++;
+                continue;
+            }
+
+            _logger.LogInformation($"Current port: {port}");
+            string command = string.Format(IS_PORT_AVAILABLE, port);
+            _logger.LogInformation($"Available port command: {command}");
+
+            var result = ExecuteCommandOnHost(GlobalConstants.HOST_USERNAME,
+                GlobalConstants.HOST_IP_ADDRESS,
+                GlobalConstants.HOST_PASSWORD,
+                command);
+
+            _logger.LogInformation($"Available port result: {result}");
+
+            if (Boolean.Parse(result))
+                break;
+
+            port++;
+        }
+
+        return port;
     }
 
     /// <param name="path">Path of image file which will be converted to ext4 filesystem.</param>

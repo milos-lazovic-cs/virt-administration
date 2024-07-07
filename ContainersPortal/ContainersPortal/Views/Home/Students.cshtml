@@ -9,7 +9,7 @@
 <div class="container mt-4">
     <div class="custom-card p-5">
         <div class="card-body">
-            <div class="table-responsive">
+            <div class="table-responsive scrollable-table">
                 <table class="table table-bordered table-hover">
                     <thead class="thead-light">
                         @if (Model.Students.Any())
@@ -38,10 +38,10 @@
                             @foreach (var student in Model.Students)
                             {
                                 <tr id="row-@student.UserName" onclick="showForm('@student.UserName')">
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.UserName)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.Email)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.FirstName)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.LastName)</td>
+                                    <td class="text-center nowrap">@Html.DisplayFor(modelItem => student.UserName)</td>
+                                    <td class="text-center nowrap">@Html.DisplayFor(modelItem => student.Email)</td>
+                                    <td class="text-center nowrap">@Html.DisplayFor(modelItem => student.FirstName)</td>
+                                    <td class="text-center nowrap">@Html.DisplayFor(modelItem => student.LastName)</td>
                                     <td>
                                         @if (student.IsActive)
                                         {
@@ -56,15 +56,60 @@
                                             </div>
                                         }
                                     </td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.PuttyPrivateKey)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.OpenSshPrivateKey)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.PublicKey)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.IpAddress)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.Port)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.DockerImageName)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.DockerContainerName)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.ImageVolumePath)</td>
-                                    <td class="text-center">@Html.DisplayFor(modelItem => student.MountVolumePath)</td>
+
+
+                                    <td class="text-center nowrap" style="max-width: 300px; overflow: hidden;">
+                                        <div class="d-flex justify-content-start">
+                                            <button class="btn btn-sm btn-outline-secondary mr-3" style="margin-right: 5px;"
+                                                    onclick="event.stopPropagation(); copyToClipboard('ppk-content-@student.UserName')">
+                                                <i class="fa fa-copy"></i>Copy
+                                            </button>
+                                            <span id="ppk-content-@student.UserName" class="truncate">@Html.DisplayFor(modelItem => student.PuttyPrivateKey)</span>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-center nowrap" style="max-width: 300px; overflow: hidden;">
+                                        <div class="d-flex justify-content-start">
+                                            <button class="btn btn-sm btn-outline-secondary mr-3" style="margin-right: 5px;"
+                                                    onclick="event.stopPropagation(); copyToClipboard('sshpk-content-@student.UserName')">
+                                                <i class="fa fa-copy"></i>Copy
+                                            </button>
+                                            <span id="sshpk-content-@student.UserName" class="truncate">@Html.DisplayFor(modelItem => student.OpenSshPrivateKey)</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center nowrap" style="max-width: 300px; overflow: hidden;">
+                                        <div class="d-flex justify-content-start">
+                                            <button class="btn btn-sm btn-outline-secondary mr-2" style="margin-right: 5px;"
+                                                    onclick="event.stopPropagation(); copyToClipboard('pbk-content-@student.UserName')">
+                                                <i class="fa fa-copy"></i>Copy
+                                            </button>
+                                            <span id="pbk-content-@student.UserName" class="truncate">@Html.DisplayFor(modelItem => student.PublicKey)</span>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-center nowrap">@Html.DisplayFor(modelItem => student.IpAddress)</td>
+                                    <td class="text-center nowrap">@Html.DisplayFor(modelItem => student.Port)</td>
+                                    <td class="text-center nowrap">@Html.DisplayFor(modelItem => student.DockerImageName)</td>
+                                    <td class="text-center nowrap">@Html.DisplayFor(modelItem => student.DockerContainerName)</td>
+                                    <td class="text-center nowrap" style="max-width: 300px; overflow: hidden;">
+                                        <div class="d-flex justify-content-start">
+                                            <button class="btn btn-sm btn-outline-secondary mr-2" style="margin-right: 5px;"
+                                                    onclick="event.stopPropagation(); copyToClipboard('img-path-@student.UserName')">
+                                                <i class="fa fa-copy"></i>Copy
+                                            </button>
+                                            <span id="img-path-@student.UserName" class="truncate">@Html.DisplayFor(modelItem => student.ImageVolumePath)</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center nowrap" style="max-width: 300px; overflow: hidden;">
+                                        <div class="d-flex justify-content-start">
+                                            <button class="btn btn-sm btn-outline-secondary mr-2" style="margin-right: 5px;"
+                                                    onclick="event.stopPropagation(); copyToClipboard('mnt-path-@student.UserName')">
+                                                <i class="fa fa-copy"></i>Copy
+                                            </button>
+                                            <span id="mnt-path-@student.UserName" class="truncate">@Html.DisplayFor(modelItem => student.MountVolumePath)</span>
+                                        </div>
+                                    </td>
+
                                 </tr>
                             }
                         }
@@ -108,6 +153,9 @@
         <input type="text" class="form-control mt-1" id="running-time" readonly>
     </div>
     *@
+    <button type="button" class="btn btn-secondary btn-sm mx-auto d-block mt-4" style="width: 140px;"
+            onclick="deleteUser()">Delete User</button>
+
     <div class="d-flex justify-content-around mt-4">
         <button id="start-button"
                 type="button"
@@ -121,12 +169,28 @@
                 style="width: 100px;"
                 onclick="stopContainer()">Stop</button>
     </div>
-    <button type="button" class="btn btn-secondary btn-sm mx-auto d-block mt-4" style="width: 100px;" onclick="hideForm()">Close</button>
+
+    <button type="button" class="btn btn-secondary btn-sm mx-auto d-block mt-4" style="width: 100px;"
+            onclick="hideForm()">Close</button>
 
 </div>
 
 
 <script>
+
+    function copyToClipboard(text) {
+
+        var textarea = document.createElement("textarea");
+        var spanContent = document.getElementById(text).textContent.trim();
+        textarea.value = spanContent;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        alert('Text copied to clipboard!');
+
+    }
+
     function showForm(username) {
 
         document.getElementById('userForm').style.display = 'block';
@@ -157,6 +221,27 @@
 
     function hideForm() {
         document.getElementById('userForm').style.display = 'none';
+    }
+
+    function deleteUser() {
+        var userName = document.getElementById('user-name').value;
+
+        $.ajax({
+            type: 'GET',
+            url: '/Container/DeleteUser',
+            data: { username: userName },
+            success: function (data) {
+                if (data.success) {
+                    removeTableRow(userName);
+                    hideForm();
+                } else {
+                    alert('Failed to start container.');
+                }
+            },
+            error: function () {
+                alert('Failed to start container.');
+            }
+        });
     }
 
     function startContainer() {
@@ -219,11 +304,30 @@
         }
     }
 
+    function removeTableRow(username) {
+        var row = document.getElementById("row-" + username);
+        if (row) {
+            row.remove();
+        }
+    }
+
 
 </script>
 
 
 <style>
+
+    .scrollable-table {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .form-control {
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 
     .table td, .table th {
         vertical-align: middle;

@@ -2,6 +2,7 @@
 using ContainersPortal.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static ContainersPortal.Controllers.ContainerController;
 
 namespace ContainersPortal.Controllers;
 
@@ -36,6 +37,24 @@ public class ContainerController : Controller
 
         return Json(model);
     }
+
+    [HttpGet("DeleteUser")]
+    [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> DeleteUser([FromQuery] string username)
+    {
+        var user = _userContext.Users.Where(u => u.UserName == username).FirstOrDefault();
+        if (user == null)
+            return NotFound();
+
+        _dockerService.StopContainer(user.DockerContainerName);
+        _dockerService.RemoveContainer(user.DockerContainerName);
+
+        _userContext.Users.Remove(user);
+        await _userContext.SaveChangesAsync();
+
+        return Ok(new { success = true });
+    }
+
     public class UserRequest
     {
         public string ContainerName { get; set; }

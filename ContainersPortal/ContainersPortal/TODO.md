@@ -10,13 +10,21 @@
 	- [x] Upali kontejner
 	- [ ] Preostali memorijski prostor
 	- [ ] Duzina rada
-
-- [ ] Sve parametre konfigurisati van kontejnera tako da mogu da se proslede kontejneru
+- [x] Sve parametre konfigurisati van kontejnera tako da mogu da se proslede kontejneru
 	- ip adresa hosta
 	- user name hosta
 	- password hosta
+- [x] Dinamicki dodeljivati korisnicima drugi port ukoliko je neki zauzet
+- [x] Dodati vertikalni scroll za Student tabelu
 
-- [ ] Dinamicki dodeljivati korisnicima drugi port ukoliko je neki zauzet
+- [x] Brisanje korisnika od strane administratora
+
+- [ ] Smestiti sve foldere u jedan osnovni folder na hostu (/etc/VirtAdministration/):
+	- VirtAdministration
+		- Db
+		- Docker
+		- SshKeys
+		- UserVolumes
 
 - [ ] Problem sa SSH pri prvoj konekciji na VM-u
 
