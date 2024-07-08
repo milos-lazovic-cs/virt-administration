@@ -16,20 +16,16 @@
 	- password hosta
 - [x] Dinamicki dodeljivati korisnicima drugi port ukoliko je neki zauzet
 - [x] Dodati vertikalni scroll za Student tabelu
-
 - [x] Brisanje korisnika od strane administratora
 
+
+- [ ] Promeniti korisnicima ssh password
+- [ ] Postaviti da port web aplikacije bude konfigurabilan
 - [ ] Smestiti sve foldere u jedan osnovni folder na hostu (/etc/VirtAdministration/):
 	- VirtAdministration
 		- Db
 		- Docker
 		- SshKeys
 		- UserVolumes
-
 - [ ] Problem sa SSH pri prvoj konekciji na VM-u
 
-- [ ] Napisati dokumentaciju
-	- Dijagram celog sistema
-	- Koriscene tehnologije
-	- Prosledjivanje parametara kontejnerima
-	- Komunikacija izmedju kontejnera
